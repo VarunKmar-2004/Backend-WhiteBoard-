@@ -23,7 +23,6 @@ io.on('connection', (socket) => {
   console.log('user connected:', socket.id);
 
   // --- Drawing/room logic ---
-
   socket.on('join_room', ({ roomName, drawerName }) => {
     socket.join(roomName);
     usersMap[socket.id] = { roomName, drawerName };
@@ -75,8 +74,6 @@ io.on('connection', (socket) => {
   });
 
   // --- WebRTC voice chat signaling ---
-
-  // Relay offer to target peer
   socket.on('webrtc_offer', ({ targetSocketId, offer, drawerName }) => {
     io.to(targetSocketId).emit('webrtc_offer', {
       fromSocketId: socket.id,
@@ -85,7 +82,6 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Relay answer to offerer
   socket.on('webrtc_answer', ({ targetSocketId, answer, drawerName }) => {
     io.to(targetSocketId).emit('webrtc_answer', {
       fromSocketId: socket.id,
@@ -94,7 +90,6 @@ io.on('connection', (socket) => {
     });
   });
 
-  // Relay ICE candidate
   socket.on('webrtc_ice_candidate', ({ targetSocketId, candidate }) => {
     io.to(targetSocketId).emit('webrtc_ice_candidate', {
       fromSocketId: socket.id,
@@ -118,6 +113,6 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(5000,'0.0.0.0', () => {
+server.listen(5000, '0.0.0.0', () => {
   console.log('Server is running');
 });
