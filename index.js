@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
     drawingHistory[roomName].push(drawData);
 
     // Broadcast to all in room including sender
-    io.to(roomName).emit('draw', drawData);
+    socket.to(roomName).emit('draw', drawData);
   });
 
   socket.on('clear_board', ({ roomName }) => {
