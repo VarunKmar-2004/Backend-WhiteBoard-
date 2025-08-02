@@ -1,19 +1,31 @@
 import express from 'express';
+import dotenv from 'dotenv'
 import { Server } from 'socket.io';
+import { connectDB } from './src/lib/db.js';
+import authRoutes from './src/routes/auth.routes.js'
 import cors from 'cors';
 import http from 'http';
-
+dotenv.config()
 const app = express();
-app.use(cors());
 app.use(express.json());
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://white-board-eight-roan.vercel.app'
+];
 
+const corsOptions = {
+  origin: allowedOrigins,
+  credentials: true
+};
+app.use(cors(corsOptions));
 app.get('/', (req, res) => {
   res.send('Hello world');
 });
-
+app.use('/api/auth',authRoutes)
+const Port=process.env.PORT || 5000
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: { origin: '*', methods: ['GET', 'POST'] },
+  cors:corsOptions,
 });
 
 const usersMap = {}; // { socketId: {roomName, drawerName} }
@@ -113,6 +125,7 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(5000, '0.0.0.0', () => {
+server.listen(Port, () => {
   console.log('Server is running');
+  connectDB()
 });
