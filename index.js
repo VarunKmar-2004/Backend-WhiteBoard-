@@ -2,12 +2,14 @@ import express from 'express';
 import dotenv from 'dotenv'
 import { Server } from 'socket.io';
 import { connectDB } from './src/lib/db.js';
+import cookieParser from 'cookie-parser';
 import authRoutes from './src/routes/auth.routes.js'
 import cors from 'cors';
 import http from 'http';
 dotenv.config()
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 const allowedOrigins = [
   'http://localhost:5173',
   'https://white-board-eight-roan.vercel.app'
